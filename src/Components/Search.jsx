@@ -4,12 +4,14 @@ import SearchResult from "./SearchResult";
 
 const Search = () => {
     //API Info
-    const apiUrl = 'https://api.eslgaming.com/play/v1/leagues';
+    const apiUrl = 'https://murmuring-brook-49622.herokuapp.com/https://api.eslgaming.com/play/v1/leagues';
 
     //Initial state hooks
     const[search, setSearch] = useState('');
     const [isSearching, setIsSearching] = useState(false);
+    const [tournament, setTournament] = useState({});
     const [results, setResults] = useState({});
+    const [contestants, setContestants] = useState({});
     const debouncedSearchTerm = useDebounce(search, 500);
 
     //Update results with new search request
@@ -25,8 +27,14 @@ const Search = () => {
 
     // API search function
     function searchCharacters(search) {
-        axios.get(`${apiUrl}/${search}`)
-            .then(res => setResults(res.data))
+        axios.all([axios.get(`${apiUrl}/${search}`),
+                         axios.get(`${apiUrl}/${search}/results`),
+                         axios.get(`${apiUrl}/${search}/contestants`)])
+            .then(axios.spread((...responses) => {
+                setTournament(responses[0].data)
+                setResults(responses[1].data)
+                setContestants(responses[2].data)
+            }))
             .catch(err => console.log(err))
     }
 
@@ -56,7 +64,9 @@ const Search = () => {
     const handleChange = event => {
         if (event.target.value === ''){
             setSearch('');
-            setResults([])
+            setTournament([]);
+            setResults([]);
+            setContestants([]);
         }
         else{
             setSearch(event.target.value)
@@ -79,7 +89,7 @@ const Search = () => {
                 <button type="submit">Search</button>
             </form>
             {/*If there are results, display ImageResult component, otherwise do not display*/}
-            {Object.keys(results).length > 0 ? (<SearchResult results={results}   />) : null}
+            {Object.keys(tournament).length > 0 ? (<SearchResult tournament={tournament} results={results} contestants={contestants}   />) : null}
 
         </div>
     );
