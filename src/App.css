@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+
 }
 
 .App-logo {
@@ -35,4 +36,73 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.container{
+  display:flex;
+  justify-content: center;
+}
+.box{
+  background-color: #e3e3e3;
+  padding:15px;
+  position: relative;
+  width:20%;
+}
+.tournamentHeader{
+  background-color: white;
+  padding:10px;
+  border-top: 5px solid #41ba4f;
+  border-radius: 3px 3px 0 0
+}
+.resultsHeader{
+  background-color: white;
+  border-radius: 3px 3px 0 0
+}
+.matchBox{
+  padding:10px;
+  border-bottom: 2px solid #e3e3e3;
+}
+.teamRow{
+  display:flex;
+  flex-flow:row wrap;
+}
+.teamName{
+  width:49%;
+  text-align: left;
+  margin-bottom: 8px;
+  margin-top:8px;
+  padding-left:5px;
+  font-size: 18px;
+}
+.teamScore{
+  width:47%;
+  text-align: right;
+  margin-bottom: 8px;
+  margin-top:8px;
+  font-size: 18px;
+
+}
+.bold{
+  font-weight: bold;
+}
+.matchWinner{
+  border-left: 5px solid #41ba4f;
+  border-radius: 3px 0 0 3px
+}
+.matchLoser{
+  border-left: 5px solid red;
+  border-radius: 3px 0 0 3px
+}
+.timeOfMatch{
+  margin-bottom: 0;
+  color: grey;
+}
+.sortButton{
+  padding:7px;
+  background-color: white;
+  border-radius: 2px;
+  border: 1px solid #b3b3b3;
+  float:right;
+  margin-top: 15px;
+  margin-right: 25px;
 }
