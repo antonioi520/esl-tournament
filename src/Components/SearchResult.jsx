@@ -7,7 +7,7 @@ const SearchResult = (props) => {
     const{results} = props;
     const{contestants} = props;
 
-    const [buttonText, setButtonText] = useState('Date ▲');
+    const [buttonText, setButtonText] = useState('Date ▼');
     const [data, setData] = useState(props.results);
 
     const [sortType, setSortType] = useState('asc');
@@ -15,14 +15,14 @@ const SearchResult = (props) => {
     useEffect(() => {
         const myFunction = () => {
             if(sortType === 'asc'){
-                setButtonText('Date ▼');
-                const sorted = Object.values(results).sort((a,b) => (b.beginAt > a.beginAt) ? 1: -1);
+                setButtonText('Date ▲');
+                const sorted = Object.values(results).sort((a,b) => (b.beginAt < a.beginAt) ? 1: -1);
                 setData(sorted);
 
             }
             else{
-                setButtonText('Date ▲');
-                const sorted = Object.values(results).sort((a,b) => (b.beginAt < a.beginAt) ? 1: -1);
+                setButtonText('Date ▼');
+                const sorted = Object.values(results).sort((a,b) => (b.beginAt > a.beginAt) ? 1: -1);
                 setData(sorted);
             }
         }
@@ -30,7 +30,7 @@ const SearchResult = (props) => {
     }, [results, sortType])
 
     const myFunction2 = () => {
-        if(buttonText === 'Date ▲'){
+        if(buttonText === 'Date ▼'){
             setSortType('asc')
         }
         else{
