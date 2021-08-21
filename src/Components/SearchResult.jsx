@@ -56,15 +56,19 @@ const SearchResult = (props) => {
                             <div className="matchBox">
                                 <p className="timeOfMatch"><Moment format="h:mm">{result.beginAt}</Moment></p>
                                 <div className="teamRow">
+                                    <p className={`teamName ${result.participants[0].points > result.participants[1].points ? "matchWinner" : "matchLoser"}`}>
                                     {Object.values(contestants).map(contestant => (
-                                        result.participants[0].id === contestant.id ? (<p className={`teamName ${result.participants[0].points > result.participants[1].points ? "matchWinner" : "matchLoser"}`}> {contestant.name} </p>) : null
+                                        result.participants[0].id === contestant.id ?  contestant.name : null
                                         ))}
+                                    </p>
                                     <p className={`teamScore ${result.participants[0].points > result.participants[1].points ? "bold" : ""}`}>{result.participants[0].points}</p>
                                 </div>
                                 <div className="teamRow">
+                                    <p className={`teamName ${result.participants[1].points > result.participants[0].points ? "matchWinner" : "matchLoser"}`}>
                                     {Object.values(contestants).map(contestant => (
-                                        result.participants[1].id === contestant.id ? (<p className={`teamName ${result.participants[1].points > result.participants[0].points ? "matchWinner" : "matchLoser"}`}> {contestant.name} </p>) : null
+                                        result.participants[1].id === contestant.id ? contestant.name : null
                                     ))}
+                                    </p>
                                     <p className={`teamScore ${result.participants[1].points > result.participants[0].points ? "bold" : ""}`}>{result.participants[1].points}</p>
                                 </div>
                             </div>
