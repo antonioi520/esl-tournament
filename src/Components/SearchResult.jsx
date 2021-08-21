@@ -3,16 +3,16 @@ import Moment from 'react-moment';
 
 const SearchResult = (props) => {
     const{tournament: {name, timeline}} = props;
+    console.log(props.results);
     const{results} = props;
     const{contestants} = props;
 
     const [buttonText, setButtonText] = useState('Date ▲');
-    const [data, setData] = useState(results);
-    const [sortType, setSortType] = useState('asc');
-    useEffect(() => {
-        setData(results)
-        console.log(data)
+    const [data, setData] = useState(props.results);
 
+    const [sortType, setSortType] = useState('asc');
+
+    useEffect(() => {
         const myFunction = () => {
             if(sortType === 'asc'){
                 setButtonText('Date ▼');
@@ -26,9 +26,8 @@ const SearchResult = (props) => {
                 setData(sorted);
             }
         }
-
         myFunction()
-    }, [sortType])
+    }, [results, sortType])
 
     const myFunction2 = () => {
         if(buttonText === 'Date ▲'){
@@ -41,7 +40,6 @@ const SearchResult = (props) => {
 
 
     return(
-
         <div className="container">
             <div className="box">
                 <div className="row">
