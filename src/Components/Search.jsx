@@ -25,11 +25,12 @@ const Search = () => {
             dispatch(getTournament(tournamentId));
             dispatch(getTournamentResults(tournamentId));
             dispatch(getTournamentContestants(tournamentId));
-            console.log(tournamentId);
+
         }
         else{
             setIsSearching(false);
         }
+        console.log(tournamentId);
     }, [dispatch, tournamentId]);
 
     // Debounce Hook
@@ -101,7 +102,7 @@ const Search = () => {
             {/*If there are results, display SearchResult component, otherwise do not display*/}
             {/*Show text when loading - removed for now as loads were instant so gave jarring effect */}
             {/*{isSearching ? <div style={{textAlign: "center"}}>Loading...</div> : null}*/}
-            {tournaments === undefined ? (<div style={{textAlign: 'center'}}>Unknown Tournament</div>) : Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
+            {tournaments === undefined ? (<div style={{textAlign: 'center'}}>Unknown Tournament</div>) : tournaments.type === 'ladder' ? (<div style={{textAlign: 'center'}}>Ladder not supported</div>) : Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
         </div>
     );
 }
