@@ -25,12 +25,12 @@ const Search = () => {
             dispatch(getTournament(tournamentId));
             dispatch(getTournamentResults(tournamentId));
             dispatch(getTournamentContestants(tournamentId));
-
+            console.log(tournamentId);
         }
         else{
             setIsSearching(false);
         }
-    }, [tournamentId]);
+    }, [dispatch, tournamentId]);
 
     // Debounce Hook
     /*function useDebounce(value, delay) {
@@ -77,13 +77,9 @@ const Search = () => {
             setTournamentid(inputSearch)
             setIsSearching(true);
         }
-    }
-
-    const testFunction2 = () => {
-        console.log(tournaments);
-        setTournamentid('');
 
     }
+
 
     return (
         <div>
@@ -103,8 +99,9 @@ const Search = () => {
                 </div>
             </form>
             {/*If there are results, display SearchResult component, otherwise do not display*/}
-            {isSearching ? <div style={{textAlign: "center"}}>Loading...</div> : null}
-            {tournaments === undefined ? (<div>Unknown Tournament</div>) : Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
+            {/*Show text when loading - removed for now as loads were instant so gave jarring effect */}
+            {/*{isSearching ? <div style={{textAlign: "center"}}>Loading...</div> : null}*/}
+            {tournaments === undefined ? (<div style={{textAlign: 'center'}}>Unknown Tournament</div>) : Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
         </div>
     );
 }
