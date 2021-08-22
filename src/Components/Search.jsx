@@ -8,30 +8,29 @@ const Search = () => {
     //Initial redux state hooks
     const dispatch = useDispatch();
     const tournamentInfo = useSelector(state => state.tournamentInfo);
-    const {loading, error, tournaments, results, contestants} = tournamentInfo;
+    const {tournaments, results, contestants} = tournamentInfo;
 
     //Initial state hooks
-    const [search, setSearch] = useState('');
+    const [inputSearch, setInputSearch] = useState('');
+    const [tournamentId, setTournamentid] = useState('');
     const [isSearching, setIsSearching] = useState(false);
-    const debouncedSearchTerm = useDebounce(search, 500);
+   // const debouncedSearchTerm = useDebounce(tournamentId, 100);
 
     //Update results with new search request
     useEffect(() => {
-        if (debouncedSearchTerm) {
-            setIsSearching(true);
-            //searchCharacters(debouncedSearchTerm);
-            dispatch(getTournament(debouncedSearchTerm));
-            dispatch(getTournamentResults(debouncedSearchTerm));
-            dispatch(getTournamentContestants(debouncedSearchTerm));
+        if (tournamentId) {
+            setIsSearching(false);
+            dispatch(getTournament(tournamentId));
+            dispatch(getTournamentResults(tournamentId));
+            dispatch(getTournamentContestants(tournamentId))
         }
         else{
             setIsSearching(false);
         }
-    }, [debouncedSearchTerm]);
+    }, [tournamentId]);
 
-
-    // Hook
-    function useDebounce(value, delay) {
+    // Debounce Hook
+    /*function useDebounce(value, delay) {
         // State and setters for debounced value
         const [debouncedValue, setDebouncedValue] = useState(value);
         useEffect(
@@ -50,35 +49,53 @@ const Search = () => {
             [value, delay] // Only re-call effect if value or delay changes
         );
         return debouncedValue;
-    }
+    }*/
 
     //Update search value
     const handleChange = event => {
         if (event.target.value === ''){
-            setSearch('');
+            setInputSearch('');
         }
         else{
-            setSearch(event.target.value)
+            setInputSearch(event.target.value)
+        }
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (inputSearch === ''){
+            setTournamentid('');
+            setIsSearching(false);
+        }
+        if(tournamentId === inputSearch){
+            setIsSearching(false);
+        }
+        else{
+            setTournamentid(inputSearch)
+            setIsSearching(true);
         }
     }
 
     return (
         <div>
             <form action="/" method="get">
+                <div className="searchContainer">
                 <label htmlFor="header-search">
-                    <span className="visually-hidden">Search</span>
+                    <h2 className="searchHeader"><span className="visually-hidden">ESL Tournament ID Search</span></h2>
                 </label>
                 <input
                     type="text"
-                    id="header-search"
-                    placeholder="Search"
-                    value={search}
+                    className="searchBar"
+                    placeholder="177160, 177161, 185553..."
+                    value={inputSearch}
                     onChange={handleChange}
                 />
-                <button type="submit">Search</button>
+                <button className="searchButton" type="submit" onClick={(e) => handleSubmit(e)}>Search</button>
+                </div>
             </form>
             {/*If there are results, display ImageResult component, otherwise do not display*/}
-            {Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants}   />) : null}
+            {isSearching ? <div style={{textAlign: "center"}}>Loading...</div> : null}
+            {Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
 
         </div>
     );

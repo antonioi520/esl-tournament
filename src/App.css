@@ -106,3 +106,25 @@
   margin-top: 15px;
   margin-right: 25px;
 }
+.searchHeader{
+  text-align: center;
+}
+.searchContainer{
+  text-align: center;
+}
+.searchBar{
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+.searchButton{
+  padding: 8px;
+  margin-top: 8px;
+  margin-right: 16px;
+  background: #ddd;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
