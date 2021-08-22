@@ -4,7 +4,7 @@ const initialState = {
     tournaments: {},
     results: {},
     contestants: {},
-    loading:true
+    loading: true
 }
 
 export default function(state = initialState, action){
