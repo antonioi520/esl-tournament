@@ -43,7 +43,7 @@ const SearchResult = (props) => {
             <div className="box">
                 <div className="row">
                     <div className="tournamentHeader">
-                    <h3 style={{marginTop: 5, marginBottom: 5}}>{name.short}</h3>
+                    <h3 style={{marginTop: 5, marginBottom: 5}}>{name.normal}</h3>
                         <Moment format="Do MMMM YYYY">{timeline.inProgress.begin}</Moment>
                     </div>
                 </div>
