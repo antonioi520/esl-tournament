@@ -3,17 +3,19 @@ import SearchResult from "./SearchResult";
 import {useDispatch, useSelector} from 'react-redux'
 import {getTournament, getTournamentResults, getTournamentContestants} from '../redux/actions/actions'
 
+
 const Search = () => {
 
     //Initial redux state hooks
     const dispatch = useDispatch();
     const tournamentInfo = useSelector(state => state.tournamentInfo);
-    const {tournaments, results, contestants} = tournamentInfo;
+    const {error, tournaments, results, contestants} = tournamentInfo;
 
     //Initial state hooks
     const [inputSearch, setInputSearch] = useState('');
     const [tournamentId, setTournamentid] = useState('');
     const [isSearching, setIsSearching] = useState(false);
+    const [hasError, setHasError] = useState(false);
    // const debouncedSearchTerm = useDebounce(tournamentId, 100);
 
     //Update results with new search request
@@ -22,7 +24,8 @@ const Search = () => {
             setIsSearching(false);
             dispatch(getTournament(tournamentId));
             dispatch(getTournamentResults(tournamentId));
-            dispatch(getTournamentContestants(tournamentId))
+            dispatch(getTournamentContestants(tournamentId));
+
         }
         else{
             setIsSearching(false);
@@ -67,13 +70,19 @@ const Search = () => {
             setTournamentid('');
             setIsSearching(false);
         }
-        if(tournamentId === inputSearch){
+        else if(tournamentId === inputSearch){
             setIsSearching(false);
         }
         else{
             setTournamentid(inputSearch)
             setIsSearching(true);
         }
+    }
+
+    const testFunction2 = () => {
+        console.log(tournaments);
+        setTournamentid('');
+
     }
 
     return (
@@ -84,7 +93,7 @@ const Search = () => {
                     <h2 className="searchHeader"><span className="visually-hidden">ESL Tournament ID Search</span></h2>
                 </label>
                 <input
-                    type="text"
+                    type="number"
                     className="searchBar"
                     placeholder="177160, 177161, 185553..."
                     value={inputSearch}
@@ -93,10 +102,9 @@ const Search = () => {
                 <button className="searchButton" type="submit" onClick={(e) => handleSubmit(e)}>Search</button>
                 </div>
             </form>
-            {/*If there are results, display ImageResult component, otherwise do not display*/}
+            {/*If there are results, display SearchResult component, otherwise do not display*/}
             {isSearching ? <div style={{textAlign: "center"}}>Loading...</div> : null}
-            {Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
-
+            {tournaments === undefined ? (<div>Unknown Tournament</div>) : Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
         </div>
     );
 }
