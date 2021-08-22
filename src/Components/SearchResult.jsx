@@ -8,27 +8,26 @@ const SearchResult = (props) => {
 
     const [buttonText, setButtonText] = useState('Date ▼');
     const [data, setData] = useState(props.results);
-
     const [sortType, setSortType] = useState('asc');
 
     useEffect(() => {
-        const myFunction = () => {
+        const sortMatches = () => {
             if(sortType === 'asc'){
                 setButtonText('Date ▲');
-                const sorted = Object.values(results).sort((a,b) => (b.beginAt < a.beginAt) ? 1: -1);
+                const sorted = Object.values(props.results).sort((a,b) => (b.beginAt < a.beginAt) ? 1: -1);
                 setData(sorted);
 
             }
             else{
                 setButtonText('Date ▼');
-                const sorted = Object.values(results).sort((a,b) => (b.beginAt > a.beginAt) ? 1: -1);
+                const sorted = Object.values(props.results).sort((a,b) => (b.beginAt > a.beginAt) ? 1: -1);
                 setData(sorted);
             }
         }
-        myFunction()
+        sortMatches()
     }, [results, sortType])
 
-    const myFunction2 = () => {
+    const setSortingType = () => {
         if(buttonText === 'Date ▼'){
             setSortType('asc')
         }
@@ -36,7 +35,6 @@ const SearchResult = (props) => {
             setSortType('desc')
         }
     }
-
 
     return(
         <div className="container">
@@ -50,7 +48,7 @@ const SearchResult = (props) => {
                 <br />
                 <div className="row">
                     <div className="resultsHeader">
-                        <button className="sortButton" type="submit" onClick={() => myFunction2()}>{buttonText}</button>
+                        <button className="sortButton" type="submit" onClick={() => setSortingType()}>{buttonText}</button>
                         {Object.values(data).map(result => (
                             <div className="matchBox">
                                 <p className="timeOfMatch"><Moment format="h:mm">{result.beginAt}</Moment></p>
