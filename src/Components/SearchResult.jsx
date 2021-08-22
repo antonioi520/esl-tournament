@@ -3,7 +3,6 @@ import Moment from 'react-moment';
 
 const SearchResult = (props) => {
     const{tournament: {name, timeline}} = props;
-    console.log(props.results);
     const{results} = props;
     const{contestants} = props;
 
