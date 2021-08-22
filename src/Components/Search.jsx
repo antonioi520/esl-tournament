@@ -1,37 +1,40 @@
-import React, {useState, useEffect, useRef} from 'react';
-import axios from 'axios';
+import React, {useState, useEffect} from 'react';
 import SearchResult from "./SearchResult";
+import {useDispatch, useSelector} from 'react-redux'
+import {getTournament, getTournamentResults, getTournamentContestants} from '../redux/actions/actions'
+
 
 const Search = () => {
-    //API Info
-    const apiUrl = 'https://api.eslgaming.com/play/v1/leagues';
+
+    //Initial redux state hooks
+    const dispatch = useDispatch();
+    const tournamentInfo = useSelector(state => state.tournamentInfo);
+    const {error, tournaments, results, contestants} = tournamentInfo;
 
     //Initial state hooks
-    const[search, setSearch] = useState('');
+    const [inputSearch, setInputSearch] = useState('');
+    const [tournamentId, setTournamentid] = useState('');
     const [isSearching, setIsSearching] = useState(false);
-    const [results, setResults] = useState({});
-    const debouncedSearchTerm = useDebounce(search, 500);
+    const [hasError, setHasError] = useState(false);
+   // const debouncedSearchTerm = useDebounce(tournamentId, 100);
 
     //Update results with new search request
     useEffect(() => {
-        if (debouncedSearchTerm) {
-            setIsSearching(true);
-            searchCharacters(debouncedSearchTerm);
+        if (tournamentId) {
+            setIsSearching(false);
+            dispatch(getTournament(tournamentId));
+            dispatch(getTournamentResults(tournamentId));
+            dispatch(getTournamentContestants(tournamentId));
+
         }
         else{
             setIsSearching(false);
         }
-    }, [debouncedSearchTerm]);
+        console.log(tournamentId);
+    }, [dispatch, tournamentId]);
 
-    // API search function
-    function searchCharacters(search) {
-        axios.get(`${apiUrl}/${search}`)
-            .then(res => setResults(res.data))
-            .catch(err => console.log(err))
-    }
-
-    // Hook
-    function useDebounce(value, delay) {
+    // Debounce Hook
+    /*function useDebounce(value, delay) {
         // State and setters for debounced value
         const [debouncedValue, setDebouncedValue] = useState(value);
         useEffect(
@@ -50,37 +53,56 @@ const Search = () => {
             [value, delay] // Only re-call effect if value or delay changes
         );
         return debouncedValue;
-    }
+    }*/
 
     //Update search value
     const handleChange = event => {
         if (event.target.value === ''){
-            setSearch('');
-            setResults([])
+            setInputSearch('');
         }
         else{
-            setSearch(event.target.value)
+            setInputSearch(event.target.value)
         }
     }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (inputSearch === ''){
+            setTournamentid('');
+            setIsSearching(false);
+        }
+        else if(tournamentId === inputSearch){
+            setIsSearching(false);
+        }
+        else{
+            setTournamentid(inputSearch)
+            setIsSearching(true);
+        }
+
+    }
+
 
     return (
         <div>
             <form action="/" method="get">
+                <div className="searchContainer">
                 <label htmlFor="header-search">
-                    <span className="visually-hidden">Search</span>
+                    <h2 className="searchHeader"><span className="visually-hidden">ESL Tournament ID Search</span></h2>
                 </label>
                 <input
-                    type="text"
-                    id="header-search"
-                    placeholder="Search"
-                    value={search}
+                    type="number"
+                    className="searchBar"
+                    placeholder="177160, 177161, 185553..."
+                    value={inputSearch}
                     onChange={handleChange}
                 />
-                <button type="submit">Search</button>
+                <button className="searchButton" type="submit" onClick={(e) => handleSubmit(e)}>Search</button>
+                </div>
             </form>
-            {/*If there are results, display ImageResult component, otherwise do not display*/}
-            {Object.keys(results).length > 0 ? (<SearchResult results={results}   />) : null}
-
+            {/*If there are results, display SearchResult component, otherwise do not display*/}
+            {/*Show text when loading - removed for now as loads were instant so gave jarring effect */}
+            {/*{isSearching ? <div style={{textAlign: "center"}}>Loading...</div> : null}*/}
+            {tournaments === undefined ? (<div style={{textAlign: 'center'}}>Unknown Tournament</div>) : tournaments.type === 'ladder' ? (<div style={{textAlign: 'center'}}>Ladder not supported</div>) : Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
         </div>
     );
 }
