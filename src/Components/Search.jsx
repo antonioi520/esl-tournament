@@ -1,42 +1,34 @@
-import React, {useState, useEffect, useRef} from 'react';
-import axios from 'axios';
+import React, {useState, useEffect} from 'react';
 import SearchResult from "./SearchResult";
+import {useDispatch, useSelector} from 'react-redux'
+import {getTournament, getTournamentResults, getTournamentContestants} from '../redux/actions/actions'
 
 const Search = () => {
-    //API Info
-    const apiUrl = 'https://murmuring-brook-49622.herokuapp.com/https://api.eslgaming.com/play/v1/leagues';
+
+    //Initial redux state hooks
+    const dispatch = useDispatch();
+    const tournamentInfo = useSelector(state => state.tournamentInfo);
+    const {loading, error, tournaments, results, contestants} = tournamentInfo;
 
     //Initial state hooks
-    const[search, setSearch] = useState('');
+    const [search, setSearch] = useState('');
     const [isSearching, setIsSearching] = useState(false);
-    const [tournament, setTournament] = useState({});
-    const [results, setResults] = useState({});
-    const [contestants, setContestants] = useState({});
     const debouncedSearchTerm = useDebounce(search, 500);
 
     //Update results with new search request
     useEffect(() => {
         if (debouncedSearchTerm) {
             setIsSearching(true);
-            searchCharacters(debouncedSearchTerm);
+            //searchCharacters(debouncedSearchTerm);
+            dispatch(getTournament(debouncedSearchTerm));
+            dispatch(getTournamentResults(debouncedSearchTerm));
+            dispatch(getTournamentContestants(debouncedSearchTerm));
         }
         else{
             setIsSearching(false);
         }
     }, [debouncedSearchTerm]);
 
-    // API search function
-    function searchCharacters(search) {
-        axios.all([axios.get(`${apiUrl}/${search}`),
-                         axios.get(`${apiUrl}/${search}/results`),
-                         axios.get(`${apiUrl}/${search}/contestants`)])
-            .then(axios.spread((...responses) => {
-                setTournament(responses[0].data)
-                setResults(responses[1].data)
-                setContestants(responses[2].data)
-            }))
-            .catch(err => console.log(err))
-    }
 
     // Hook
     function useDebounce(value, delay) {
@@ -64,9 +56,6 @@ const Search = () => {
     const handleChange = event => {
         if (event.target.value === ''){
             setSearch('');
-            setTournament([]);
-            setResults([]);
-            setContestants([]);
         }
         else{
             setSearch(event.target.value)
@@ -89,7 +78,7 @@ const Search = () => {
                 <button type="submit">Search</button>
             </form>
             {/*If there are results, display ImageResult component, otherwise do not display*/}
-            {Object.keys(tournament).length > 0 ? (<SearchResult tournament={tournament} results={results} contestants={contestants}   />) : null}
+            {Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants}   />) : null}
 
         </div>
     );
