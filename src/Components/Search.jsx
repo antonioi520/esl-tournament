@@ -9,13 +9,12 @@ const Search = () => {
     //Initial redux state hooks
     const dispatch = useDispatch();
     const tournamentInfo = useSelector(state => state.tournamentInfo);
-    const {error, tournaments, results, contestants} = tournamentInfo;
+    const {tournaments, results, contestants} = tournamentInfo;
 
     //Initial state hooks
     const [inputSearch, setInputSearch] = useState('');
     const [tournamentId, setTournamentid] = useState('');
     const [isSearching, setIsSearching] = useState(false);
-    const [hasError, setHasError] = useState(false);
    // const debouncedSearchTerm = useDebounce(tournamentId, 100);
 
     //Update results with new search request
@@ -99,9 +98,10 @@ const Search = () => {
                 <button className="searchButton" type="submit" onClick={(e) => handleSubmit(e)}>Search</button>
                 </div>
             </form>
-            {/*If there are results, display SearchResult component, otherwise do not display*/}
             {/*Show text when loading - removed for now as loads were instant so gave jarring effect */}
             {/*{isSearching ? <div style={{textAlign: "center"}}>Loading...</div> : null}*/}
+
+            {/*If there are results, display SearchResult component, otherwise do not display*/}
             {tournaments === undefined ? (<div style={{textAlign: 'center'}}>Unknown Tournament</div>) : tournaments.type === 'ladder' ? (<div style={{textAlign: 'center'}}>Ladder not supported</div>) : Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
         </div>
     );
