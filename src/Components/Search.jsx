@@ -2,10 +2,11 @@ import React, {useState, useEffect} from 'react';
 import SearchResult from "./SearchResult";
 import {useDispatch, useSelector} from 'react-redux'
 import {getTournament, getTournamentResults, getTournamentContestants} from '../redux/actions/actions'
+import {ErrorBoundary} from 'react-error-boundary'
+
 
 
 const Search = () => {
-
     //Initial redux state hooks
     const dispatch = useDispatch();
     const tournamentInfo = useSelector(state => state.tournamentInfo);
@@ -79,7 +80,15 @@ const Search = () => {
         }
 
     }
-
+    //If API call errors, retry it
+    function ErrorFallback({resetErrorBoundary}) {
+        return (
+            <div role="alert" style={{textAlign: 'center'}}>
+                <p>Something went wrong:</p>
+                <button onClick={resetErrorBoundary}>Fetch Results</button>
+            </div>
+        )
+    }
 
     return (
         <div>
@@ -102,8 +111,14 @@ const Search = () => {
             {/*{isSearching ? <div style={{textAlign: "center"}}>Loading...</div> : null}*/}
 
             {/*If there are results, display SearchResult component, otherwise do not display*/}
-            {tournaments === undefined ? (<div style={{textAlign: 'center'}}>Unknown Tournament</div>) : tournaments.type === 'ladder' ? (<div style={{textAlign: 'center'}}>Ladder not supported</div>) : Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
-        </div>
+            <ErrorBoundary
+                FallbackComponent={ErrorFallback}
+                onReset={() => {
+                    // reset the state of your app so the error doesn't happen again
+                }}
+            >{tournaments === undefined ? (<div style={{textAlign: 'center'}}>Unknown Tournament</div>) : tournaments.type === 'ladder' ? (<div style={{textAlign: 'center'}}>Ladder not supported</div>) : Object.keys(tournaments).length > 0 ? (<SearchResult tournament={tournaments} results={results} contestants={contestants} />) : null}
+            </ErrorBoundary>
+            </div>
     );
 }
 export default Search
